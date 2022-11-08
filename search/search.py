@@ -141,9 +141,31 @@ def breadthFirstSearch(problem: SearchProblem):
         ###################################################
     util.raiseNotDefined()
 
-def uniformCostSearch(problem: SearchProblem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+def uniformCostSearch(problem):
+     ################## My UCS code ######################
+    explored = set()
+    PriorityQueue  = util.PriorityQueue()#初始化PriorityQueue
+    List=[] #初始化List
+    StartState = problem.getStartState()#設定起始座標位置
+    
+    StartNode = (StartState, List)#定義起始點用(點座標,行進方向集合)此資料結構儲存
+    PriorityQueue.push(StartNode,0)#將起始點放入PriorityQueue紀錄起來
+    while not PriorityQueue.isEmpty():#判斷PriorityQueue是否為空
+        currentstate,List = PriorityQueue.pop()#currentstate儲存pop出的座標，List儲存pop出的方向集合
+        if not currentstate in explored:#搜尋過後就不用再回頭搜尋否則會無法往下尋找終點
+            explored.add(currentstate)#紀錄未搜尋的座標
+        else:
+            continue#若當前座標已搜尋過跳過此次探索
+        if problem.isGoalState(currentstate):#判斷當前座標是否為目標座標
+            print("抵達終點!!")
+            print("行進方向集合:",List)
+            return List#回傳方向集合
+        else:
+            successor = problem.getSuccessors(currentstate)#找到當前座標的所有後繼者
+            for item in successor:            
+                newlist=List+[item[1]]             
+                PriorityQueue.push((item[0],newlist),problem.getCostOfActions(newlist))#將後繼者座標及方向集合放入Queue中
+        ###################################################
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -155,8 +177,33 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
+     ################## My A* Search code ######################
+    explored = set()
+    PriorityQueue  = util.PriorityQueue()#初始化PriorityQueue
+    List=[] #初始化List
+    StartState = problem.getStartState()#設定起始座標位置
+    
+    StartNode = (StartState, List)#定義起始點用(點座標,行進方向集合)此資料結構儲存
+    PriorityQueue.push(StartNode,nullHeuristic(StartState, problem))#將起始點放入PriorityQueue紀錄起來
+    while not PriorityQueue.isEmpty():#判斷PriorityQueue是否為空
+        currentstate,List = PriorityQueue.pop()#currentstate儲存pop出的座標，List儲存pop出的方向集合
+        if not currentstate in explored:#搜尋過後就不用再回頭搜尋否則會無法往下尋找終點
+            explored.add(currentstate)#紀錄未搜尋的座標
+        else:
+            continue#若當前座標已搜尋過跳過此次探索
+        if problem.isGoalState(currentstate):#判斷當前座標是否為目標座標
+            print("抵達終點!!")
+            print("行進方向集合:",List)
+            return List#回傳方向集合
+        else:
+            successor = problem.getSuccessors(currentstate)#找到當前座標的所有後繼者
+            for item in successor:            
+                newlist=List+[item[1]]  
+                newCost = problem.getCostOfActions(newlist) + heuristic(item[0], problem)           
+                PriorityQueue.push((item[0],newlist),newCost)#將後繼者座標及方向集合放入Queue中
+        ###################################################
     util.raiseNotDefined()
+
 
 
 # Abbreviations
